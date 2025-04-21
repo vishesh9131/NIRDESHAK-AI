@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Recommendation</title>
+</head>
+<body>
+    <h1>Career Recommendation</h1>
+    {% if result %}
+        <p>Recommended Careers: {{ result }}</p>
+    {% else %}
+        <form method="POST">
+            <label for="profile">Enter your profile:</label>
+            <input type="text" id="profile" name="profile" required>
+            <button type="submit">Get Recommendation</button>
+        </form>
+    {% endif %}
+</body>
+</html>

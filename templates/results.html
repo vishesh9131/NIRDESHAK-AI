@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat</title>
+</head>
+<body>
+    <h1>AI Chat</h1>
+    <form method="POST" action="/ai">
+        <label for="user_input">Enter your message:</label>
+        <input type="text" id="user_input" name="user_input" required>
+        <button type="submit">Send</button>
+    </form>
+    {% if user_input and response %}
+        <h2>Your Input:</h2>
+        <p>{{ user_input }}</p>
+        <h2>AI Response:</h2>
+        <p>{{ response }}</p>
+    {% endif %}
+</body>
+</html>

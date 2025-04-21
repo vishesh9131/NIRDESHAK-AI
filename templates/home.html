@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body>
+    <h1>Welcome to Nirdeshak AI Assistant</h1>
+    
+    <!-- AI Chat Form -->
+    <form action="/ai" method="POST">
+        <label for="user_input">Ask the AI:</label><br>
+        <input type="text" id="user_input" name="user_input" placeholder="Type your question..." required>
+        <button type="submit">Ask</button>
+    </form>
+
+    <hr>
+
+    <ul>
+        <li><a href="/recommend">Career Recommendations</a></li>
+        <li><a href="/mood">Mood Booster</a></li>
+        <li><a href="/recipe">Recipe Suggestions</a></li>
+        <li><a href="/email">Email Classification</a></li>
+    </ul>
+</body>
+</html>
