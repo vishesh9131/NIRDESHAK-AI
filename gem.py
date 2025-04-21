@@ -1,1 +1,1 @@
-GEM = "pastew here ok"
+GEM = "AIzaSyCDYpXHnTFd5LyRpFGIJ8EtMAlWR44gqsQ"

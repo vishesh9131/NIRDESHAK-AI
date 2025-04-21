@@ -3,18 +3,284 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mood Booster</title>
+    <title>Mood Booster - Nirdeshak AI</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .back-button {
+            text-decoration: none;
+            color: #0066cc;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .back-button:hover {
+            text-decoration: underline;
+        }
+        h1 {
+            color: #2c3e50;
+            margin: 0;
+        }
+        .mood-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .mood-button {
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .mood-button:hover {
+            border-color: #0066cc;
+            transform: translateY(-2px);
+        }
+        .mood-button.selected {
+            border-color: #0066cc;
+            background-color: #e3f2fd;
+        }
+        .mood-emoji {
+            font-size: 24px;
+        }
+        .mood-label {
+            font-size: 14px;
+            color: #4a5568;
+        }
+        .custom-mood {
+            margin-top: 20px;
+        }
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #0066cc;
+        }
+        button {
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 15px;
+        }
+        button:hover {
+            background-color: #0052a3;
+        }
+        #loading {
+            display: none;
+            margin: 20px 0;
+            color: #4a5568;
+            font-style: italic;
+        }
+        .result-section {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            animation: fadeIn 0.5s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .markdown-content {
+            line-height: 1.8;
+            color: #2d3748;
+        }
+        .markdown-content h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #edf2f7;
+            padding-bottom: 8px;
+        }
+        .markdown-content ul {
+            padding-left: 20px;
+        }
+        .markdown-content li {
+            margin: 8px 0;
+        }
+    </style>
 </head>
 <body>
-    <h1>Mood Booster</h1>
-    {% if result %}
-        <p>Encouraging Suggestion: {{ result }}</p>
-    {% else %}
-        <form method="POST">
-            <label for="mood">How are you feeling?</label>
-            <input type="text" id="mood" name="mood" required>
-            <button type="submit">Get Suggestion</button>
+    <div class="container">
+        <div class="header">
+            <a href="/" class="back-button">← Back to Home</a>
+            <h1>Mood Booster</h1>
+        </div>
+
+        <form id="mood-form" onsubmit="handleSubmit(event)">
+            <div class="mood-selector">
+                <button type="button" class="mood-button" onclick="selectMood('happy')">
+                    <span class="mood-emoji">😊</span>
+                    <span class="mood-label">Happy</span>
+                </button>
+                <button type="button" class="mood-button" onclick="selectMood('sad')">
+                    <span class="mood-emoji">😢</span>
+                    <span class="mood-label">Sad</span>
+                </button>
+                <button type="button" class="mood-button" onclick="selectMood('stressed')">
+                    <span class="mood-emoji">😰</span>
+                    <span class="mood-label">Stressed</span>
+                </button>
+                <button type="button" class="mood-button" onclick="selectMood('anxious')">
+                    <span class="mood-emoji">😨</span>
+                    <span class="mood-label">Anxious</span>
+                </button>
+                <button type="button" class="mood-button" onclick="selectMood('tired')">
+                    <span class="mood-emoji">😴</span>
+                    <span class="mood-label">Tired</span>
+                </button>
+                <button type="button" class="mood-button" onclick="selectMood('angry')">
+                    <span class="mood-emoji">😠</span>
+                    <span class="mood-label">Angry</span>
+                </button>
+            </div>
+
+            <div class="custom-mood">
+                <textarea 
+                    id="mood" 
+                    name="mood" 
+                    placeholder="Tell us more about how you're feeling... (optional)"
+                ></textarea>
+            </div>
+
+            <button type="submit">
+                <span>Get Personalized Support</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </button>
         </form>
-    {% endif %}
+
+        <div id="loading">Creating a personalized message to lift your spirits...</div>
+        
+        <div id="result-container"></div>
+    </div>
+
+    <script>
+        marked.setOptions({
+            breaks: true,
+            gfm: true
+        });
+
+        let selectedMood = '';
+
+        function selectMood(mood) {
+            selectedMood = mood;
+            // Update UI to show selected mood
+            document.querySelectorAll('.mood-button').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            document.querySelector(`.mood-button:nth-child(${getMoodIndex(mood)})`).classList.add('selected');
+            
+            // Update textarea with selected mood
+            const textarea = document.getElementById('mood');
+            if (!textarea.value) {
+                textarea.value = `I'm feeling ${mood}`;
+            }
+        }
+
+        function getMoodIndex(mood) {
+            const moods = ['happy', 'sad', 'stressed', 'anxious', 'tired', 'angry'];
+            return moods.indexOf(mood) + 1;
+        }
+
+        async function handleSubmit(event) {
+            event.preventDefault();
+            const form = event.target;
+            const textarea = form.querySelector('textarea');
+            const loading = document.getElementById('loading');
+            const resultContainer = document.getElementById('result-container');
+            const submitButton = form.querySelector('button[type="submit"]');
+
+            if (!selectedMood && !textarea.value.trim()) {
+                alert('Please select a mood or describe how you're feeling');
+                return;
+            }
+
+            // Show loading and disable submit button
+            loading.style.display = 'block';
+            submitButton.disabled = true;
+            submitButton.style.opacity = '0.7';
+            
+            try {
+                const formData = new FormData(form);
+                const response = await fetch('/mood', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                // Create result section
+                const resultSection = document.createElement('div');
+                resultSection.className = 'result-section';
+                resultSection.innerHTML = `
+                    <div class="markdown-content">
+                        ${marked.parse(data.result)}
+                    </div>
+                `;
+                
+                // Clear previous results and show new ones
+                resultContainer.innerHTML = '';
+                resultContainer.appendChild(resultSection);
+                
+                // Scroll to results
+                resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } catch (error) {
+                console.error('Error:', error);
+                resultContainer.innerHTML = '<p style="color: #dc3545;">Sorry, there was an error getting your mood boost. Please try again.</p>';
+            } finally {
+                // Hide loading and enable submit button
+                loading.style.display = 'none';
+                submitButton.disabled = false;
+                submitButton.style.opacity = '1';
+            }
+        }
+    </script>
 </body>
 </html>
